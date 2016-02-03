@@ -31,6 +31,7 @@ class TestApp extends WordSpecLike with TestKitBase with ImplicitSender with Bef
     println("Creating actor after reload")
     val actor = system.actorOf(Props[TheActor])
 
+    // commenting this 'sleep' makes test passed
     Thread.sleep(2000)
 
     // println("sending ....")
