@@ -14,7 +14,7 @@ class TestApp extends WordSpecLike with TestKitBase with ImplicitSender with Bef
   "case 1:" must {
     "before reload" in {
       println("Creating actor before reload")
-      val actor = system.actorOf(TheActor.props(1))
+      val actor = system.actorOf(TheActor.props(1, doInit = true))
 
       actor ! 2
       expectMsg(1 second, 2)
@@ -30,7 +30,7 @@ class TestApp extends WordSpecLike with TestKitBase with ImplicitSender with Bef
 
     "after reload" in {
       println("Creating actor after reload")
-      val actor = system.actorOf(TheActor.props(1))
+      val actor = system.actorOf(TheActor.props(1, doInit = true))
 
       // commenting this 'sleep' makes test passed
       Thread.sleep(2000)
@@ -45,7 +45,7 @@ class TestApp extends WordSpecLike with TestKitBase with ImplicitSender with Bef
   "case 2" must {
     "before reload" in {
       println("Creating actor before reload")
-      val actor = system.actorOf(TheActor.props(2))
+      val actor = system.actorOf(TheActor.props(2, doInit = false))
 
       actor ! 2
       expectMsg(1 second, 2)
@@ -61,12 +61,13 @@ class TestApp extends WordSpecLike with TestKitBase with ImplicitSender with Bef
 
     "after reload" in {
       println("Creating actor after reload")
-      val actor = system.actorOf(TheActor.props(2))
+      // setting doInit to true let pass this test
+      val actor = system.actorOf(TheActor.props(2, doInit = false))
 
       Thread.sleep(7000)
 
       actor ! 2
-      expectNoMsg(1 second) // if initialize() is commented in TheActor - this check fails, got 0 here
+      expectNoMsg(1 second)
 
       system.stop(actor)
     }

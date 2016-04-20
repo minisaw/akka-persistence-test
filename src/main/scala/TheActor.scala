@@ -21,9 +21,9 @@ case object EvOne extends FsmEvent
 case object EvTwo extends FsmEvent
 
 object TheActor {
-  def props(nr: Int) = Props(new TheActor(nr))
+  def props(nr: Int, doInit: Boolean) = Props(new TheActor(nr, doInit))
 }
-class TheActor(nr: Int) extends PersistentFSM[FsmState,FsmData,FsmEvent] {
+class TheActor(nr: Int, doInit: Boolean) extends PersistentFSM[FsmState,FsmData,FsmEvent] {
   override def domainEventClassTag: ClassTag[FsmEvent] = classTag[FsmEvent]
   override def persistenceId: String = s"test.actor.$nr"
   override def applyEvent(domainEvent: FsmEvent, currentData: FsmData): FsmData = {
@@ -52,6 +52,8 @@ class TheActor(nr: Int) extends PersistentFSM[FsmState,FsmData,FsmEvent] {
       stop
   }
 
-  initialize()
+  if (doInit) {
+    initialize()
+  }
 }
 
