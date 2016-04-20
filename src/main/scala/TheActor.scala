@@ -1,3 +1,4 @@
+import akka.actor.Props
 import akka.persistence.fsm.PersistentFSM
 import scala.reflect.classTag
 import scala.reflect.ClassTag
@@ -19,9 +20,12 @@ sealed trait FsmEvent
 case object EvOne extends FsmEvent
 case object EvTwo extends FsmEvent
 
-class TheActor extends PersistentFSM[FsmState,FsmData,FsmEvent] {
+object TheActor {
+  def props(nr: Int) = Props(new TheActor(nr))
+}
+class TheActor(nr: Int) extends PersistentFSM[FsmState,FsmData,FsmEvent] {
   override def domainEventClassTag: ClassTag[FsmEvent] = classTag[FsmEvent]
-  override def persistenceId: String = "test.actor"
+  override def persistenceId: String = s"test.actor.$nr"
   override def applyEvent(domainEvent: FsmEvent, currentData: FsmData): FsmData = {
     println(s"applying $domainEvent in $currentData")
     (domainEvent, currentData) match {
